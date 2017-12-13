@@ -58,5 +58,23 @@ public class ClientDaoTest {
 		client.setEmail("johndoe@gmail.com");
 		return client;
 	}
+	
+	@Test
+	public void updateClient() {
+		Client client = new Client();
+		client.setId(1);
+		client.setNom("Durand");
+		client.setPrenom("Jamy");
+		client.setDateNaissance("1986-03-30");
+		client.setEmail("jamydurand@gmail.com");
+		
+		clientDao.updateClient(client);
+	}
+	
+	@Test
+	public void deleteClient() {
+		int id = 7;
+		clientDao.deleteClient(id);
+	}
 
 }

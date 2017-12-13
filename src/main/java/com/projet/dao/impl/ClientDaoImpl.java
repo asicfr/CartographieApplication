@@ -28,12 +28,13 @@ public class ClientDaoImpl implements ClientDao {
 	private final String INSERT_SQL = "INSERT INTO CLIENTS(nom,prenom,date_naissance,e_mail) values(?,?,?,?)";
 	private final String FETCH_SQL = "select nom, prenom, date_naissance, e_mail from clients";
 	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
+	private final String UPDATE_SQL = "UPDATE clients SET nom=?, prenom=?, date_naissance=?, e_mail=? WHERE id=?;";
+	private final String DELETE_SQL = "DELETE FROM `clients` WHERE id=?;";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	public Client create(final Client client) {
-		KeyHolder holder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
@@ -44,7 +45,7 @@ public class ClientDaoImpl implements ClientDao {
 				ps.setString(4, client.getEmail());
 				return ps;
 			}
-		}, holder);
+		});
 
 /*		int newUserId = holder.getKey().intValue();
 		user.setId(newUserId);
@@ -58,6 +59,32 @@ public class ClientDaoImpl implements ClientDao {
 
 	public Client findClientById(int id) {
 		return jdbcTemplate.queryForObject(FETCH_SQL_BY_ID, new Object[] { id }, new ClientMapper());
+	}
+	
+	public void updateClient(Client client) {
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, client.getNom());
+				ps.setString(2, client.getPrenom());
+				ps.setString(3, client.getDateNaissance());
+				ps.setString(4, client.getEmail());
+				ps.setInt(5, client.getId());
+				return ps;
+			}
+		});
+	}
+	
+	public void deleteClient(int id) {
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(DELETE_SQL, Statement.RETURN_GENERATED_KEYS);
+				ps.setInt(1, id);
+				return ps;
+			}
+		});
 	}
 
 }

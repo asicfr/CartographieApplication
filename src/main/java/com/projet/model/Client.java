@@ -7,6 +7,10 @@ public class Client {
     private String prenom;
     private String date_naissance;
     private String e_mail;
+
+    public void setId(int id) {
+		this.id = id;
+	}
     
     public int getId() {
 		return id;
