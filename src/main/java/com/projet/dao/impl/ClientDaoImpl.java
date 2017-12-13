@@ -26,8 +26,8 @@ import com.projet.model.Client;
 public class ClientDaoImpl implements ClientDao {
 
 	private final String INSERT_SQL = "INSERT INTO CLIENTS(nom,prenom,date_naissance,e_mail) values(?,?,?,?)";
-	private final String FETCH_SQL = "select nom, prenom, date_naissance, e_mail from clients";
-	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
+	private final String FETCH_SQL = "SELECT nom, prenom, date_naissance, e_mail from clients";
+	private final String FETCH_SQL_BY_ID = "SELECT * from clients where id = ?";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -46,9 +46,6 @@ public class ClientDaoImpl implements ClientDao {
 			}
 		}, holder);
 
-/*		int newUserId = holder.getKey().intValue();
-		user.setId(newUserId);
-*/
 		return client;
 	}
 
@@ -63,6 +60,11 @@ public class ClientDaoImpl implements ClientDao {
 }
 
 class ClientMapper implements RowMapper<Client> {
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 
 	@Override
 	public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
