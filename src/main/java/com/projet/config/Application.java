@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan("com.devglan")
+@ComponentScan("com.projet")
 public class Application {
 
 	public static void main(String[] args) {

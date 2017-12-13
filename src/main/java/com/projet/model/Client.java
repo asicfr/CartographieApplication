@@ -2,18 +2,14 @@ package com.projet.model;
 
 public class Client {
 
-	private String id;
+	private int id;
 	private String nom;
     private String prenom;
     private String date_naissance;
     private String e_mail;
     
-    public String getId() {
+    public int getId() {
 		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
     public String getNom() {

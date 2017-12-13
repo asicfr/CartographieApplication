@@ -14,6 +14,6 @@ public interface ClientDao {
 
 	public List<Client> findAll();
 
-	public Client findClientById(String id);
+	public Client findClientById(int id);
 
 }

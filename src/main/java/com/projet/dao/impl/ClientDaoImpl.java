@@ -25,8 +25,8 @@ import com.projet.model.Client;
 @Repository
 public class ClientDaoImpl implements ClientDao {
 
-	private final String INSERT_SQL = "INSERT INTO CLIENTS(id,nom,prenom,date_naissance,e_mail) values(?,?,?,?,?)";
-	private final String FETCH_SQL = "select id, nom, prenom, date_naissance, e_mail from clients";
+	private final String INSERT_SQL = "INSERT INTO CLIENTS(nom,prenom,date_naissance,e_mail) values(?,?,?,?)";
+	private final String FETCH_SQL = "select nom, prenom, date_naissance, e_mail from clients";
 	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
 
 	@Autowired
@@ -38,11 +38,10 @@ public class ClientDaoImpl implements ClientDao {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, client.getId());
-				ps.setString(2, client.getNom());
-				ps.setString(3, client.getPrenom());
-				ps.setString(4, client.getDateNaissance());
-				ps.setString(5, client.getEmail());
+				ps.setString(1, client.getNom());
+				ps.setString(2, client.getPrenom());
+				ps.setString(3, client.getDateNaissance());
+				ps.setString(4, client.getEmail());
 				return ps;
 			}
 		}, holder);
@@ -57,7 +56,7 @@ public class ClientDaoImpl implements ClientDao {
 		return jdbcTemplate.query(FETCH_SQL, new ClientMapper());
 	}
 
-	public Client findClientById(String id) {
+	public Client findClientById(int id) {
 		return jdbcTemplate.queryForObject(FETCH_SQL_BY_ID, new Object[] { id }, new ClientMapper());
 	}
 
@@ -68,8 +67,7 @@ class ClientMapper implements RowMapper<Client> {
 	@Override
 	public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Client client = new Client();
-		client.setId(rs.getString("record_id"));
-		client.setNom(rs.getString("name"));
+		client.setNom(rs.getString("nom"));
 		client.setPrenom(rs.getString("prenom"));
 		client.setDateNaissance(rs.getString("date_naissance"));
 		client.setEmail(rs.getString("e_mail"));
