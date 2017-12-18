@@ -73,7 +73,7 @@ public class ClientDaoTest {
 	
 	@Test
 	public void deleteClient() {
-		int id = 7;
+		int id = 10;
 		clientDao.deleteClient(id);
 	}
 

@@ -1,9 +1,10 @@
 package com.projet.model;
 
-public class Produits {
+public class Produit {
 	private String id;
 	private String titre;
 	private double prix;
+	
 	public String getId() {
 		return id;
 	}
