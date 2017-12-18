@@ -1,17 +1,30 @@
 package com.projet.dao.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.projet.config.Application;
 import com.projet.dao.ProduitDao;
 import com.projet.model.Produit;
 
+/**
+ * @author only2dhir
+ *
+ */
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes=Application.class)
 public class ProduitDaoTest {
+	
 	@Autowired
 	private ProduitDao produitDao;
 
@@ -33,7 +46,7 @@ public class ProduitDaoTest {
 
 	@Test
 	public void findProduitById() {
-		Produit produit = produitDao.findProduitById(1);
+		Produit produit = produitDao.findProduitById("CS001");
 		assertNotNull(produit);
 	}
 	

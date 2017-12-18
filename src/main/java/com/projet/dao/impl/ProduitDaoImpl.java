@@ -11,17 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import com.projet.dao.ProduitDao;
 import com.projet.model.Produit;
-import com.projet.model.Produit;
 
+/**
+ * @author only2dhir
+ *
+ */
+@Repository
 public class ProduitDaoImpl implements ProduitDao {
 
 	private final String INSERT_SQL = "INSERT INTO PRODUITS(id,titre,prix) values(?,?,?)";
 	private final String FETCH_SQL = "select id, titre, prix from produits";
 	private final String FETCH_SQL_BY_ID = "select * from produits where id = ?";
-	private final String UPDATE_SQL = "UPDATE produits SET id=?, titre=?, prix=?;";
+	private final String UPDATE_SQL = "UPDATE produits SET titre=?, prix=? WHERE id=?;";
 	private final String DELETE_SQL = "DELETE FROM `produits` WHERE id=?;";
 
 	@Autowired
@@ -49,7 +54,7 @@ public class ProduitDaoImpl implements ProduitDao {
 	}
 
 	@Override
-	public Produit findProduitById(int id) {
+	public Produit findProduitById(String id) {
 		return jdbcTemplate.queryForObject(FETCH_SQL_BY_ID, new Object[] { id }, new ProduitMapper());
 	}
 
@@ -59,9 +64,9 @@ public class ProduitDaoImpl implements ProduitDao {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 				PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, produit.getId());
-				ps.setString(2, produit.getTitre());
-				ps.setDouble(3, produit.getPrix());
+				ps.setString(1, produit.getTitre());
+				ps.setDouble(2, produit.getPrix());
+				ps.setString(3, produit.getId());
 				return ps;
 			}
 		});
