@@ -15,5 +15,9 @@ public interface ClientDao {
 	public List<Client> findAll();
 
 	public Client findClientById(int id);
+	
+	public void updateClient (Client client);
+	
+	public void deleteClient (int id);
 
 }

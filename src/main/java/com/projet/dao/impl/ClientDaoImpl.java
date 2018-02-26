@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.projet.dao.ClientDao;
@@ -26,45 +24,106 @@ import com.projet.model.Client;
 public class ClientDaoImpl implements ClientDao {
 
 	private final String INSERT_SQL = "INSERT INTO CLIENTS(nom,prenom,date_naissance,e_mail) values(?,?,?,?)";
-	private final String FETCH_SQL = "SELECT nom, prenom, date_naissance, e_mail from clients";
-	private final String FETCH_SQL_BY_ID = "SELECT * from clients where id = ?";
+	private final String FETCH_SQL = "select nom, prenom, date_naissance, e_mail from clients";
+	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
+	private final String UPDATE_SQL = "UPDATE clients SET nom=?, prenom=?, date_naissance=?, e_mail=? WHERE id=?;";
+	private final String DELETE_SQL = "DELETE FROM `clients` WHERE id=?;";
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	public Client create(final Client client) {
-		KeyHolder holder = new GeneratedKeyHolder();
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, client.getNom());
-				ps.setString(2, client.getPrenom());
-				ps.setString(3, client.getDateNaissance());
-				ps.setString(4, client.getEmail());
-				return ps;
+		List<Client> lesClients = findAll();
+		boolean creer = true;
+		for(Client leClient:lesClients) {
+			System.out.println(leClient.getEmail());
+			if(leClient.getEmail().equals(client.getEmail())) {
+				System.out.println("oh");
+				creer = false;
+				try {
+					throw new Exception("L'adresses e-mail est déjà dans la base");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}, holder);
-
+		}
+		if(client.getDateNaissance() == null || client.getEmail() == null || client.getNom() == null || client.getPrenom() == null){
+			System.out.println("oh");
+			creer = false;
+			try {
+				throw new Exception("Veuillez renseigner tous les champs");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(creer) {
+			jdbcTemplate.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, client.getNom());
+					ps.setString(2, client.getPrenom());
+					ps.setString(3, client.getDateNaissance());
+					ps.setString(4, client.getEmail());
+					
+					/*
+					try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+			            if (generatedKeys.next()) {
+			                client.setId(generatedKeys.getInt(1));
+			            }
+			            else {
+			                throw new SQLException("Échec de la création de l'utilisateur. Id inexistant.");
+			            }
+			        }
+			        */
+					
+					return ps;
+				}
+			});
+		}
 		return client;
 	}
 
 	public List<Client> findAll() {
 		return jdbcTemplate.query(FETCH_SQL, new ClientMapper());
+		
 	}
 
 	public Client findClientById(int id) {
 		return jdbcTemplate.queryForObject(FETCH_SQL_BY_ID, new Object[] { id }, new ClientMapper());
 	}
+	
+	public void updateClient(Client client) {
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, client.getNom());
+				ps.setString(2, client.getPrenom());
+				ps.setString(3, client.getDateNaissance());
+				ps.setString(4, client.getEmail());
+				ps.setInt(5, client.getId());
+				return ps;
+			}
+		});
+	}
+	
+	public void deleteClient(int id) {
+		jdbcTemplate.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(DELETE_SQL, Statement.RETURN_GENERATED_KEYS);
+				ps.setInt(1, id);
+				return ps;
+			}
+		});
+	}
 
 }
 
 class ClientMapper implements RowMapper<Client> {
-
-	@Override
-	public String toString() {
-		return super.toString();
-	}
 
 	@Override
 	public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
