@@ -23,10 +23,10 @@ import com.projet.model.Produit;
 @Repository
 public class ProduitDaoImpl implements ProduitDao {
 
-	private final String INSERT_SQL = "INSERT INTO PRODUITS(id,titre,prix) values(?,?,?)";
-	private final String FETCH_SQL = "select id, titre, prix from produits";
+	private final String INSERT_SQL = "INSERT INTO PRODUITS(id,titre,prix,stock) values(?,?,?,?)";
+	private final String FETCH_SQL = "select id, titre, prix, stock from produits";
 	private final String FETCH_SQL_BY_ID = "select * from produits where id = ?";
-	private final String UPDATE_SQL = "UPDATE produits SET titre=?, prix=? WHERE id=?;";
+	private final String UPDATE_SQL = "UPDATE produits SET titre=?, prix=?, stock=? WHERE id=?;";
 	private final String DELETE_SQL = "DELETE FROM `produits` WHERE id=?;";
 
 	@Autowired
@@ -34,17 +34,46 @@ public class ProduitDaoImpl implements ProduitDao {
 	
 	@Override
 	public Produit create(Produit produit) {
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, produit.getId());
-				ps.setString(2, produit.getTitre());
-				ps.setDouble(3, produit.getPrix());
-				return ps;
+		List<Produit> lesProduits = findAll();
+		boolean nom = true;
+		boolean creer = true;
+		if(produit.getId() == null || produit.getTitre() == null || produit.getPrix() < 0 || produit.getStock() < 0) {
+			nom = false;
+			creer = false;
+			try {
+				throw new Exception("Tous les champs doivent être remplis");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		});
-		
+		}
+		if(nom) {
+			for(Produit leProduit :lesProduits) {
+				if(produit.getId().equals(leProduit.getId())) {
+					creer = false;
+					try {
+						throw new Exception("La référence existe déjà dans la base");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+				}
+			}
+		}
+		if(creer){
+			jdbcTemplate.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, produit.getId());
+					ps.setString(2, produit.getTitre());
+					ps.setDouble(3, produit.getPrix());
+					ps.setInt(4, produit.getStock());
+					return ps;
+				}
+			});
+		}
 		return produit;
 	}
 
@@ -60,16 +89,29 @@ public class ProduitDaoImpl implements ProduitDao {
 
 	@Override
 	public void updateProduit(Produit produit) {
-		jdbcTemplate.update(new PreparedStatementCreator() {
-			@Override
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-				PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, produit.getTitre());
-				ps.setDouble(2, produit.getPrix());
-				ps.setString(3, produit.getId());
-				return ps;
+		boolean creer = true;
+		if(produit.getStock()<0) {
+			creer = false;
+			try {
+				throw new Exception("La qte en stock ne peut pas passer en-dessous de 0");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		});
+		}
+		if(creer) {
+			jdbcTemplate.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(UPDATE_SQL, Statement.RETURN_GENERATED_KEYS);
+					ps.setString(1, produit.getTitre());
+					ps.setDouble(2, produit.getPrix());
+					ps.setInt(3, produit.getStock());
+					ps.setString(4, produit.getId());
+					return ps;
+				}
+			});
+		}
 	}
 
 	@Override
@@ -95,6 +137,7 @@ class ProduitMapper implements RowMapper<Produit> {
 		produit.setId(rs.getString("id"));
 		produit.setTitre(rs.getString("titre"));
 		produit.setPrix(rs.getDouble("prix"));
+		produit.setStock(rs.getInt("stock"));
 		return produit;
 	}
 

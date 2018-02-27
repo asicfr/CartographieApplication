@@ -38,18 +38,17 @@ public class ClientDaoImpl implements ClientDao {
 		for(Client leClient:lesClients) {
 			System.out.println(leClient.getEmail());
 			if(leClient.getEmail().equals(client.getEmail())) {
-				System.out.println("oh");
 				creer = false;
 				try {
-					throw new Exception("L'adresses e-mail est déjà dans la base");
+					throw new Exception("L'adresse e-mail est déjà dans la base");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				break;
 			}
 		}
 		if(client.getDateNaissance() == null || client.getEmail() == null || client.getNom() == null || client.getPrenom() == null){
-			System.out.println("oh");
 			creer = false;
 			try {
 				throw new Exception("Veuillez renseigner tous les champs");

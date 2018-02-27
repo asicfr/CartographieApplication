@@ -4,6 +4,7 @@ public class Produit {
 	private String id;
 	private String titre;
 	private double prix;
+	private int stock;
 	
 	public String getId() {
 		return id;
@@ -23,4 +24,11 @@ public class Produit {
 	public void setPrix(double prix) {
 		this.prix = prix;
 	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
+	
 }

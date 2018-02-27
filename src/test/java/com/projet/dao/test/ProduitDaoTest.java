@@ -53,8 +53,9 @@ public class ProduitDaoTest {
 	private Produit getProduit() {
 		Produit produit = new Produit();
 		produit.setId("AS001");
-		produit.setTitre("Asirateur");
+		produit.setTitre("Aspirateur");
 		produit.setPrix(50.19);
+		produit.setStock(20);
 		return produit;
 	}
 	
@@ -64,6 +65,7 @@ public class ProduitDaoTest {
 		produit.setId("AS001");
 		produit.setTitre("Aspirateur");
 		produit.setPrix(49.99);
+		produit.setStock(18);
 		
 		produitDao.updateProduit(produit);
 	}
