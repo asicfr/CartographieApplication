@@ -10,10 +10,10 @@ public interface CommandeDao {
 
 	public List<Commande> findAll();
 
-	public Commande findCommandeById(String id);
+	public Commande findCommandeById(int client_id, String produit_id, int numero);
 	
 	public void updateCommande (Commande commande);
 	
-	public void deleteCommande (String id);
+	public void deleteCommande (int client_id,String produit_id,int numero);
 
 }

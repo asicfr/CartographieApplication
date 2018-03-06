@@ -46,32 +46,35 @@ public class CommandeDaoTest {
 
 	@Test
 	public void findCommandeById() {
-		Commande commande = commandeDao.findCommandeById("AJ001");
+		Commande commande = commandeDao.findCommandeById(1,"AS001",1);
 		assertNotNull(commande);
 	}
 	
 	private Commande getCommande() {
 		Commande commande = new Commande();
-		commande.setId("CJ001");
 		commande.setClientId(1);
-		commande.setProduitId("CS001");
+		commande.setProduitId("AS001");
+		commande.setQte(3);
+		commande.setDateCommande("2017-12-19");
 		return commande;
 	}
 	
 	@Test
 	public void updateCommande() {
 		Commande commande = new Commande();
-		commande.setId("AJ001");
 		commande.setClientId(1);
-		commande.setProduitId("CS001");
+		commande.setProduitId("AJ001");
 		commande.setDateCommande("2017-12-19");
+		commande.setQte(2);
 		
 		commandeDao.updateCommande(commande);
 	}
 	
 	@Test
 	public void deleteCommande() {
-		String id = "CJ001";
-		commandeDao.deleteCommande(id);
+		int clientId = 1;
+		String produitId = "AJ001";
+		int numero = 1;
+		commandeDao.deleteCommande(clientId,produitId,numero);
 	}
 }

@@ -55,7 +55,7 @@ public class ClientDaoTest {
 		client.setNom("Doe");
 		client.setPrenom("John");
 		client.setDateNaissance("1990-03-14");
-		client.setEmail("johndoe@gmail.com");
+		client.setEmail("johnloo@gmail.com");
 		return client;
 	}
 	

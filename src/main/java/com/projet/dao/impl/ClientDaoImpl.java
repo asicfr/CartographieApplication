@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.projet.dao.ClientDao;
@@ -28,6 +30,7 @@ public class ClientDaoImpl implements ClientDao {
 	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
 	private final String UPDATE_SQL = "UPDATE clients SET nom=?, prenom=?, date_naissance=?, e_mail=? WHERE id=?;";
 	private final String DELETE_SQL = "DELETE FROM `clients` WHERE id=?;";
+	KeyHolder keyHolder = new GeneratedKeyHolder();
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -67,20 +70,11 @@ public class ClientDaoImpl implements ClientDao {
 					ps.setString(3, client.getDateNaissance());
 					ps.setString(4, client.getEmail());
 					
-					/*
-					try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-			            if (generatedKeys.next()) {
-			                client.setId(generatedKeys.getInt(1));
-			            }
-			            else {
-			                throw new SQLException("Échec de la création de l'utilisateur. Id inexistant.");
-			            }
-			        }
-			        */
-					
 					return ps;
 				}
-			});
+			}, keyHolder);
+			int id = keyHolder.getKey().intValue();
+			client.setId(id);
 		}
 		return client;
 	}
