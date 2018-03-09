@@ -2,7 +2,6 @@ package com.projet.model;
 
 import java.util.List;
 
-import com.projet.dao.ClientDAOFactory;
 import com.projet.dao.ClientDao;
 
 public class Client {
@@ -12,7 +11,6 @@ public class Client {
     private String prenom;
     private String date_naissance;
     private String e_mail;
-    ClientDao clientDAO = ClientDAOFactory.getClientDAO();
 
     public Client() {
 		super();

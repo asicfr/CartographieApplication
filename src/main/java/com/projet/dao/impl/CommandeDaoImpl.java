@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.projet.dao.CommandeDao;
+import com.projet.dao.ProduitDao;
 import com.projet.model.Commande;
 
 @Repository
@@ -27,6 +28,9 @@ public class CommandeDaoImpl implements CommandeDao{
 	private final String UPDATE_SQL = "UPDATE commandes SET qte=?, date_commande=? WHERE client_id = ? AND produit_id=? AND numero=?;";
 	private final String DELETE_SQL = "DELETE FROM `commandes` WHERE client_id = ? AND produit_id=? AND numero=?;";
 	KeyHolder keyHolder = new GeneratedKeyHolder();
+	
+	@Autowired
+	private ProduitDao produitDao;
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -41,6 +45,7 @@ public class CommandeDaoImpl implements CommandeDao{
 				ps.setString(2, commande.getProduitId());
 				ps.setInt(3, commande.getQte());
 				ps.setString(4, commande.getDateCommande());
+				produitDao.updateProduit(commande.getQte(), commande.getProduitId());
 				
 				return ps;
 			}

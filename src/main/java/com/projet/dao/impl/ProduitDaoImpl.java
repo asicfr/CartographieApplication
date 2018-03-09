@@ -27,6 +27,7 @@ public class ProduitDaoImpl implements ProduitDao {
 	private final String FETCH_SQL = "select id, titre, prix, stock from produits";
 	private final String FETCH_SQL_BY_ID = "select * from produits where id = ?";
 	private final String UPDATE_SQL = "UPDATE produits SET titre=?, prix=?, stock=? WHERE id=?;";
+	private final String REMOVE_SQL = "UPDATE produits SET stock=? WHERE id=?;";
 	private final String DELETE_SQL = "DELETE FROM `produits` WHERE id=?;";
 
 	@Autowired
@@ -108,6 +109,30 @@ public class ProduitDaoImpl implements ProduitDao {
 					ps.setDouble(2, produit.getPrix());
 					ps.setInt(3, produit.getStock());
 					ps.setString(4, produit.getId());
+					return ps;
+				}
+			});
+		}
+	}
+	
+	@Override
+	public void updateProduit(int numero, String id) {
+		Produit produit = findProduitById(id);
+		if(produit.getStock()<numero) {
+			try {
+				throw new Exception("Quantité demandée trop importante. Commande impossible");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			jdbcTemplate.update(new PreparedStatementCreator(){
+				@Override
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(REMOVE_SQL, Statement.RETURN_GENERATED_KEYS);
+					ps.setInt(1, produit.getStock()-numero);
+					ps.setString(2, id);
+					
 					return ps;
 				}
 			});

@@ -18,6 +18,8 @@ public interface ProduitDao {
 	
 	public void updateProduit (Produit produit);
 	
+	public void updateProduit (int numero, String id);
+	
 	public void deleteProduit (String id);
 
 }
