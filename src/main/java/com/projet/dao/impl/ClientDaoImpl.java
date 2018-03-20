@@ -26,7 +26,7 @@ import com.projet.model.Client;
 public class ClientDaoImpl implements ClientDao {
 
 	private final String INSERT_SQL = "INSERT INTO CLIENTS(nom,prenom,date_naissance,e_mail) values(?,?,?,?)";
-	private final String FETCH_SQL = "select nom, prenom, date_naissance, e_mail from clients";
+	private final String FETCH_SQL = "select id, nom, prenom, date_naissance, e_mail from clients";
 	private final String FETCH_SQL_BY_ID = "select * from clients where id = ?";
 	private final String UPDATE_SQL = "UPDATE clients SET nom=?, prenom=?, date_naissance=?, e_mail=? WHERE id=?;";
 	private final String DELETE_SQL = "DELETE FROM `clients` WHERE id=?;";
@@ -121,6 +121,7 @@ class ClientMapper implements RowMapper<Client> {
 	@Override
 	public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Client client = new Client();
+		client.setId(rs.getInt("id"));
 		client.setNom(rs.getString("nom"));
 		client.setPrenom(rs.getString("prenom"));
 		client.setDateNaissance(rs.getString("date_naissance"));

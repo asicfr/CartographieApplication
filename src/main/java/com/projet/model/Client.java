@@ -16,6 +16,15 @@ public class Client {
 		super();
 	}
 
+	public Client(int id, String nom, String prenom, String date_naissance, String e_mail) {
+		super();
+		setId(id);
+		setNom(nom);
+		setPrenom(prenom);
+		setDateNaissance(date_naissance);
+		setEmail(e_mail);
+	}
+
 	public Client(String nom, String prenom, String date_naissance, String e_mail) {
 		super();
 		setNom(nom);
